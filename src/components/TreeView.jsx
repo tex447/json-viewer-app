@@ -1,63 +1,65 @@
 import React, { useState } from 'react';
 
-const TreeNode = ({ data, level = 0 }) => {
+const TreeNode = ({ data }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const indent = level * 20; // 20px indentation per level
 
-  const hasChildren = data !== null && 
-    typeof data === 'object' && 
-    Object.keys(data).length > 0;
+  // Extract the main identifiers we want to show
+  const name = data.name || '';
+  const entityType = data.entityType || '';
+  const observations = data.observations || [];
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const renderValue = () => {
-    if (data === null) return 'null';
-    if (typeof data !== 'object') return String(data);
-    return '';
-  };
-
   return (
-    <div style={{ marginLeft: `${indent}px` }}>
-      {hasChildren ? (
-        <>
-          <span 
-            onClick={toggleExpand} 
-            style={{ cursor: 'pointer', userSelect: 'none' }}
-          >
-            {isExpanded ? '▼' : '▶'} 
-            {Array.isArray(data) ? '[' : '{'} 
-            {!isExpanded && `...${Array.isArray(data) ? ']' : '}'}`}
-          </span>
-          {isExpanded && (
-            <div>
-              {Object.entries(data).map(([key, value], index) => (
-                <div key={key}>
-                  <span style={{ color: '#7A3E9D' }}>{key}</span>: 
-                  <TreeNode data={value} level={level + 1} />
-                  {index < Object.keys(data).length - 1 && ','}
-                </div>
-              ))}
-              <div style={{ marginLeft: `${indent}px` }}>
-                {Array.isArray(data) ? ']' : '}'}
-              </div>
+    <div className="tree-node">
+      <div 
+        className="node-header"
+        onClick={toggleExpand}
+      >
+        <span className="expand-icon">{isExpanded ? '▼' : '▶'}</span>
+        <span className="entity-name">{name}</span>
+        <span className="entity-type">{entityType}</span>
+      </div>
+      
+      {isExpanded && (
+        <div className="node-content">
+          {observations.map((observation, index) => (
+            <div key={index} className="observation">
+              {observation}
             </div>
-          )}
-        </>
-      ) : (
-        <span style={{ color: typeof data === 'string' ? '#4A9D4A' : '#3E789D' }}>
-          {renderValue()}
-        </span>
+          ))}
+        </div>
       )}
     </div>
   );
 };
 
 const TreeView = ({ data }) => {
+  // Handle both single object and array of objects
+  const items = Array.isArray(data) ? data : [data];
+  
+  // Group items by entityType
+  const groupedItems = items.reduce((groups, item) => {
+    const type = item.entityType || 'Other';
+    if (!groups[type]) {
+      groups[type] = [];
+    }
+    groups[type].push(item);
+    return groups;
+  }, {});
+
   return (
     <div className="tree-view">
-      <TreeNode data={data} />
+      {Object.entries(groupedItems).map(([type, items]) => (
+        <div key={type} className="entity-group">
+          <h3 className="group-header">{type}</h3>
+          {items.map((item, index) => (
+            <TreeNode key={index} data={item} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 };
