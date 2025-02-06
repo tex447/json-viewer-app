@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import './App.css'
+import TreeView from './components/TreeView'
 
 function App() {
   const [jsonData, setJsonData] = useState(null)
   const [autoDetectFormat, setAutoDetectFormat] = useState(true)
+  const [error, setError] = useState(null)
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0]
@@ -12,8 +14,10 @@ function App() {
     reader.onload = (e) => {
       const text = e.target.result
       try {
+        // Try parsing as regular JSON first
         const data = JSON.parse(text)
         setJsonData(data)
+        setError(null)
       } catch (error) {
         if (autoDetectFormat) {
           try {
@@ -21,14 +25,26 @@ function App() {
             const lines = text.trim().split('\n')
             const objects = lines.map(line => JSON.parse(line))
             setJsonData(objects)
+            setError(null)
           } catch (error) {
-            console.error('Failed to parse file:', error)
+            setError('Failed to parse file. Please check the file format.')
+            setJsonData(null)
           }
+        } else {
+          setError('Failed to parse JSON file.')
+          setJsonData(null)
         }
       }
     }
 
-    reader.readAsText(file)
+    reader.onerror = () => {
+      setError('Error reading file')
+      setJsonData(null)
+    }
+
+    if (file) {
+      reader.readAsText(file)
+    }
   }
 
   return (
@@ -50,9 +66,8 @@ function App() {
         className="file-input"
       />
       <div className="json-viewer">
-        {jsonData && (
-          <pre>{JSON.stringify(jsonData, null, 2)}</pre>
-        )}
+        {error && <div className="error">{error}</div>}
+        {jsonData && <TreeView data={jsonData} />}
       </div>
     </div>
   )
