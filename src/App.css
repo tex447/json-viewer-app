@@ -18,12 +18,7 @@
   padding: 20px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-pre {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow-x: auto;
 }
 
 .error {
@@ -32,4 +27,19 @@ pre {
   background-color: #fff0f0;
   border-radius: 4px;
   margin-top: 10px;
+}
+
+.tree-view {
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tree-view span {
+  display: inline-block;
+  margin: 2px 0;
+}
+
+.tree-view span:hover {
+  background-color: #f5f5f5;
 }
