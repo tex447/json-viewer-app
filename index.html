@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        #jsonViewer {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .json-object {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .json-object:last-child {
+            border-bottom: none;
+        }
+        .format-toggle {
+            margin-bottom: 10px;
+        }
+        .error {
+            color: red;
+            padding: 10px;
+            background-color: #fff0f0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JSON Viewer</h1>
+    <div class="format-toggle">
+        <input type="checkbox" id="autoDetectFormat" checked>
+        <label for="autoDetectFormat">Auto-detect format (NDJSON/JSON)</label>
+    </div>
+    <input type="file" id="fileInput" accept=".json">
+    <div id="jsonViewer"></div>
+    <script>
+        function isNDJSON(text) {
+            try {
+                // Check if it's a valid single JSON first
+                JSON.parse(text);
+                return false;
+            } catch (e) {
+                // If it fails, check if it's NDJSON
+                try {
+                    const lines = text.trim().split('\n');
+                    lines.forEach(line => JSON.parse(line));
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+        }
+
+        function formatJSON(obj) {
+            return JSON.stringify(obj, null, 2);
+        }
+
+        function displayError(message) {
+            document.getElementById('jsonViewer').innerHTML = 
+                `<div class="error">Error: ${message}</div>`;
+        }
+
+        function processNDJSON(text) {
+            const objects = text.trim().split('\n')
+                .map(line => JSON.parse(line));
+            
+            return objects.map(obj => 
+                `<div class="json-object"><pre>${formatJSON(obj)}</pre></div>`
+            ).join('');
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const autoDetect = document.getElementById('autoDetectFormat').checked;
+                
+                try {
+                    if (autoDetect && isNDJSON(text)) {
+                        document.getElementById('jsonViewer').innerHTML = processNDJSON(text);
+                    } else {
+                        // Try parsing as regular JSON
+                        const json = JSON.parse(text);
+                        document.getElementById('jsonViewer').innerHTML = 
+                            `<pre>${formatJSON(json)}</pre>`;
+                    }
+                } catch (error) {
+                    displayError(`Failed to parse file: ${error.message}`);
+                }
+            };
+            
+            reader.onerror = function(e) {
+                displayError('Error reading file');
+            };
+            
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>
