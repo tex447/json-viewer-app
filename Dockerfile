@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Install git and other dependencies
+RUN apk add --no-cache git
+
 WORKDIR /app
 
 # Copy package files and config files first
@@ -11,9 +14,7 @@ COPY postcss.config.js ./
 
 # Install dependencies
 RUN npm install
-RUN npm install -D @types/node
-RUN npm install -D tailwindcss postcss autoprefixer
-RUN npm install -D @shadcn/ui
+RUN npm install -D @types/node tailwindcss postcss autoprefixer @shadcn/ui
 
 # Add shadcn/ui components
 RUN npx shadcn-ui@latest add card
