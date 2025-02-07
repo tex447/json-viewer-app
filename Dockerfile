@@ -12,17 +12,13 @@ COPY components.json ./
 COPY tailwind.config.js ./
 COPY postcss.config.js ./
 
-# Install dependencies
+# Install all dependencies first
 RUN npm install
 RUN npm install -D @types/node tailwindcss postcss autoprefixer
-RUN npm install -g shadcn-ui
+RUN npm install shadcn-ui@latest
 
-# Add shadcn/ui components (using full path to ensure it's found)
-RUN /usr/local/bin/npx shadcn-ui@latest add card
-RUN /usr/local/bin/npx shadcn-ui@latest add badge
-RUN /usr/local/bin/npx shadcn-ui@latest add separator
-RUN /usr/local/bin/npx shadcn-ui@latest add scroll-area
-RUN /usr/local/bin/npx shadcn-ui@latest add tooltip
+# Initialize shadcn-ui (copy components directly instead of using CLI)
+COPY ./src/components/ui /app/src/components/ui/
 
 # Copy the rest of the code
 COPY . .
