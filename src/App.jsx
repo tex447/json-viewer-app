@@ -10,36 +10,55 @@ function App() {
   const [error, setError] = useState(null);
   const [isMCPData, setIsMCPData] = useState(false);
 
+  // Test function
+  const testExample = () => {
+    const testData = [
+      {
+        type: 'entity',
+        name: 'Test_Entity',
+        entityType: 'Test',
+        observations: ['Test Observation']
+      }
+    ];
+    console.log('Testing example data...');
+    console.log('Test data:', testData);
+    const validation = validateMCPData(testData);
+    console.log('Validation result:', validation);
+    if (validation.isValid) {
+      setJsonData(validation.data);
+      setIsMCPData(true);
+      setError(null);
+    }
+  };
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = (e) => {
       const text = e.target.result;
-      console.log('File content:', text.substring(0, 200)); // Debug log
+      console.log('File content:', text.substring(0, 200));
 
       try {
-        // Try NDJSON first if it contains newlines
         if (autoDetectFormat && text.includes('\n')) {
           try {
             const lines = text.trim().split('\n');
-            console.log('NDJSON lines:', lines.length); // Debug log
+            console.log('NDJSON lines:', lines.length);
             
-            // Parse each line individually and filter out empty lines
             const objects = lines
               .filter(line => line.trim())
               .map(line => {
                 try {
                   return JSON.parse(line);
                 } catch (e) {
-                  console.log('Failed to parse line:', line); // Debug log
+                  console.log('Failed to parse line:', line);
                   throw e;
                 }
               });
 
-            console.log('Parsed objects:', objects.length); // Debug log
+            console.log('Parsed objects:', objects.length);
             const mcpValidation = validateMCPData(objects);
-            console.log('MCP validation result:', mcpValidation); // Debug log
+            console.log('MCP validation result:', mcpValidation);
             
             if (mcpValidation.isValid) {
               setJsonData(mcpValidation.data);
@@ -48,16 +67,14 @@ function App() {
               return;
             }
           } catch (e) {
-            console.log('NDJSON parsing error:', e); // Debug log
-            // Continue to try regular JSON
+            console.log('NDJSON parsing error:', e);
           }
         }
 
-        // Try as regular JSON
         const data = JSON.parse(text);
-        console.log('Regular JSON parsed:', !!data); // Debug log
+        console.log('Regular JSON parsed:', !!data);
         const mcpValidation = validateMCPData(data);
-        console.log('Regular JSON MCP validation:', mcpValidation); // Debug log
+        console.log('Regular JSON MCP validation:', mcpValidation);
         
         if (mcpValidation.isValid) {
           setJsonData(mcpValidation.data);
@@ -69,7 +86,7 @@ function App() {
           setError(null);
         }
       } catch (error) {
-        console.log('Final parsing error:', error); // Debug log
+        console.log('Final parsing error:', error);
         setError('Failed to parse file. Please check the file format.');
         setJsonData(null);
         setIsMCPData(false);
@@ -99,9 +116,16 @@ function App() {
           onChange={(e) => setAutoDetectFormat(e.target.checked)}
           className="mr-2"
         />
-        <label htmlFor="autoDetectFormat">
+        <label htmlFor="autoDetectFormat" className="mr-4">
           Auto-detect format (NDJSON/JSON)
         </label>
+
+        <button
+          onClick={testExample}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Test Example Data
+        </button>
       </div>
 
       <input
