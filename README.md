@@ -11,7 +11,9 @@ A simple web application for viewing JSON files in a human-readable format, spec
 - **Expandable/Collapsible Nodes**: Interactive tree nodes for better data exploration
 - **Error Handling**: Clear error messages for invalid file formats or parsing issues
 
-## Installation
+## Local Development
+
+### Option 1: Direct Development
 
 1. Clone the repository:
 ```bash
@@ -29,19 +31,18 @@ npm install
 npm run dev
 ```
 
-## Docker Support
+### Option 2: Docker Development (Recommended)
 
-Build and run the application using Docker:
+Run the application using Docker Compose for development:
 
-1. Build the image:
 ```bash
-docker build -t json-viewer-app .
+npm run start
 ```
 
-2. Run the container:
-```bash
-docker run -p 3000:3000 json-viewer-app
-```
+This will:
+- Start the development server with hot-reload
+- Install all necessary dependencies
+- Make the app available at http://localhost:5173
 
 ## Usage
 
@@ -72,8 +73,8 @@ docker run -p 3000:3000 json-viewer-app
 
 - React (Vite)
 - Node.js
-- Express
-- Docker
+- Docker (for development)
+- Tailwind CSS
 
 ## Directory Structure
 
@@ -87,8 +88,7 @@ json-viewer-app/
 │   ├── index.css
 │   └── main.jsx
 ├── public/
-├── Dockerfile
-├── server.js
+├── docker-compose.yml
 ├── package.json
 └── vite.config.js
 ```
