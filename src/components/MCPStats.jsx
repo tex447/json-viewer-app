@@ -1,93 +1,83 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tooltip } from '@/components/ui/tooltip';
 
 const MCPStats = ({ data }) => {
-  // Calculate MCP statistics
-  const calculateStats = (mcpData) => {
-    const stats = {
-      entities: 0,
-      relations: 0,
-      observations: 0,
-      entityTypes: new Set(),
-      relationTypes: new Set()
-    };
-
-    // Handle array of objects or single object
-    const items = Array.isArray(mcpData) ? mcpData : [mcpData];
-
-    items.forEach(item => {
-      if (item.type === 'entity') {
-        stats.entities++;
-        if (item.entityType) {
-          stats.entityTypes.add(item.entityType);
-        }
-        if (item.observations) {
-          stats.observations += item.observations.length;
-        }
-      } else if (item.type === 'relation') {
-        stats.relations++;
-        if (item.relationType) {
-          stats.relationTypes.add(item.relationType);
-        }
-      }
-    });
-
-    return {
-      ...stats,
-      entityTypes: Array.from(stats.entityTypes),
-      relationTypes: Array.from(stats.relationTypes)
-    };
+  // Calculate statistics
+  const stats = {
+    entities: data.filter(item => item.type === 'entity').length,
+    relations: data.filter(item => item.type === 'relation').length,
+    observations: data.reduce((acc, item) => {
+      return acc + (item.observations?.length || 0);
+    }, 0),
+    entityTypes: [...new Set(data
+      .filter(item => item.type === 'entity')
+      .map(item => item.entityType))],
+    relationTypes: [...new Set(data
+      .filter(item => item.type === 'relation')
+      .map(item => item.relationType))]
   };
 
-  const stats = calculateStats(data);
-
   return (
-    <div className="mb-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>MCP Data Statistics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Entities</h3>
-              <p className="text-2xl font-bold">{stats.entities}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Relations</h3>
-              <p className="text-2xl font-bold">{stats.relations}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Observations</h3>
-              <p className="text-2xl font-bold">{stats.observations}</p>
-            </div>
+    <Card className="w-full mb-4 bg-white shadow-md">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold">MCP Data Structure</CardTitle>
+        <CardDescription>Statistical overview of the MCP file structure</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="text-center">
+            <h3 className="text-sm font-medium text-gray-500">Entities</h3>
+            <p className="text-2xl font-bold">{stats.entities}</p>
           </div>
-          
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Entity Types</h3>
-              <div className="mt-1 text-sm">
+          <div className="text-center">
+            <h3 className="text-sm font-medium text-gray-500">Relations</h3>
+            <p className="text-2xl font-bold">{stats.relations}</p>
+          </div>
+          <div className="text-center">
+            <h3 className="text-sm font-medium text-gray-500">Observations</h3>
+            <p className="text-2xl font-bold">{stats.observations}</p>
+          </div>
+        </div>
+
+        <Separator className="my-4" />
+
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Entity Types</h3>
+            <ScrollArea className="h-20">
+              <div className="flex flex-wrap gap-2">
                 {stats.entityTypes.map(type => (
-                  <span key={type} className="inline-block bg-gray-100 rounded px-2 py-1 mr-2 mb-2">
-                    {type}
-                  </span>
+                  <Tooltip key={type} content={`${data.filter(item => item.entityType === type).length} instances`}>
+                    <Badge variant="secondary" className="cursor-help">
+                      {type}
+                    </Badge>
+                  </Tooltip>
                 ))}
               </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-gray-500">Relation Types</h3>
-              <div className="mt-1 text-sm">
-                {stats.relationTypes.map(type => (
-                  <span key={type} className="inline-block bg-gray-100 rounded px-2 py-1 mr-2 mb-2">
-                    {type}
-                  </span>
-                ))}
-              </div>
-            </div>
+            </ScrollArea>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+
+          <div>
+            <h3 className="text-sm font-medium text-gray-500 mb-2">Relation Types</h3>
+            <ScrollArea className="h-20">
+              <div className="flex flex-wrap gap-2">
+                {stats.relationTypes.map(type => (
+                  <Tooltip key={type} content={`${data.filter(item => item.relationType === type).length} instances`}>
+                    <Badge variant="outline" className="cursor-help">
+                      {type}
+                    </Badge>
+                  </Tooltip>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
