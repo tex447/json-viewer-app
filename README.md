@@ -87,30 +87,42 @@ json-viewer-app/
 │   │   │   ├── scroll-area.jsx
 │   │   │   ├── separator.jsx
 │   │   │   └── tooltip.jsx
-│   │   ├── TreeView/
-│   │   │   ├── TreeNode.jsx
-│   │   │   └── index.jsx
-│   │   ├── FileUpload/
-│   │   ├── EntityGroup/
-│   │   └── ErrorBoundary/
+│   │   ├── TreeView.jsx
+│   │   └── MCPStats.jsx
 │   ├── lib/
 │   │   └── utils.js
-│   ├── hooks/
-│   │   ├── useJsonParser.js
-│   │   └── useFileReader.js
 │   ├── utils/
-│   │   ├── formatters.js
-│   │   └── validators.js
+│   │   ├── mcpValidator.js
+│   │   └── formatters.js
 │   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
 │   └── main.jsx
 ├── public/
 ├── docker/
 │   └── Dockerfile.dev
 ├── docker-compose.yml
 ├── postcss.config.js
+├── tailwind.config.js
 ├── package.json
 └── vite.config.js
 ```
+
+## UI Components
+
+The application uses shadcn/ui components built on top of Radix UI primitives. Key components include:
+
+### Core Components
+- `TreeView`: Displays hierarchical JSON data with expandable nodes
+- `MCPStats`: Shows statistical overview of MCP data structure
+- `FileUpload`: Handles file input and format detection
+
+### UI Components (src/components/ui/)
+- `tooltip.jsx`: Provides context-sensitive information on hover
+- `separator.jsx`: Visual dividers between content sections
+- `scroll-area.jsx`: Customizable scrollable containers
+- `card.jsx`: Container components for content organization
+- `badge.jsx`: Label and tag components for metadata
 
 ## Technical Stack
 
@@ -144,25 +156,33 @@ The Docker setup includes:
 - Automatic dependency installation
 - Port 3000 exposed for local access
 
-### Troubleshooting Common Issues
+### Theme Support
 
-1. **PostCSS Configuration**:
-   - Ensure postcss.config.js uses ES module syntax
-   - Required plugins: tailwindcss, autoprefixer
+The application includes comprehensive theme support with:
+- Light/Dark mode
+- CSS variables for consistent styling
+- Customizable color schemes
+- Responsive design utilities
 
-2. **Import Resolution**:
-   - Use @/ alias for src directory imports
-   - Configured in vite.config.js
+### Required Dependencies
 
-3. **UI Components**:
-   - All components in src/components/ui/
-   - Required Radix UI primitives installed
-   - Proper ESM imports used
-
-4. **Development Environment**:
-   - Node.js 18+ required
-   - Git installed in container
-   - ESM modules enabled in package.json
+```json
+{
+  "dependencies": {
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-separator": "^1.0.3",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.2.0",
+    "tailwindcss-animate": "^1.0.7"
+  }
+}
+```
 
 ## Contributing
 
