@@ -8,9 +8,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "docker:dev": "docker-compose up",
-    "docker:build": "docker build -t json-viewer-app .",
-    "docker:prod": "docker build -t json-viewer-app . --target production"
+    "start": "docker-compose up"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
@@ -36,3 +34,4 @@
     "tailwindcss": "^3.4.1",
     "vite": "^5.0.8"
   }
+}
