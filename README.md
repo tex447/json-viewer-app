@@ -1,19 +1,30 @@
 # JSON Viewer App
 
-A simple web application for viewing JSON files in a human-readable format, specifically designed for MCP (Model Context Protocol) server JSON files. The application supports both standard JSON and NDJSON (Newline Delimited JSON) formats.
+A web application designed for viewing and analyzing MCP (Model Context Protocol) server JSON files in a human-readable format. The application provides an intuitive interface for exploring both standard JSON and NDJSON (Newline Delimited JSON) formats, with special features tailored for MCP server data structures.
 
 ## Features
 
-- **File Upload**: Easy drag-and-drop or click-to-upload functionality
-- **Format Auto-detection**: Automatically detects and parses both JSON and NDJSON formats
-- **Tree Visualization**: Hierarchical display of JSON data
-- **Entity Grouping**: Groups data by entity type for better organization
-- **Expandable/Collapsible Nodes**: Interactive tree nodes for better data exploration
-- **Error Handling**: Clear error messages for invalid file formats or parsing issues
+- **Smart Format Detection**: 
+  - Automatic detection of JSON and NDJSON formats
+  - Specialized parsing for MCP server data structures
+  - Support for nested entity relationships
 
-## Local Development
+- **Interactive Visualization**:
+  - Hierarchical tree view with collapsible nodes
+  - Entity type grouping and filtering
+  - Relationship visualization between entities
+  - Search functionality within loaded data
 
-### Option 1: Direct Development
+- **User Experience**:
+  - Drag-and-drop file upload
+  - Real-time parsing and validation
+  - Error highlighting with detailed messages
+  - Responsive design for all screen sizes
+  - Dark/Light theme support
+
+## Quick Start
+
+### Using Docker (Recommended)
 
 1. Clone the repository:
 ```bash
@@ -21,86 +32,124 @@ git clone https://github.com/tex447/json-viewer-app.git
 cd json-viewer-app
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-### Option 2: Docker Development (Recommended)
-
-Run the application using Docker Compose for development:
-
+2. Start the application:
 ```bash
 npm run start
 ```
 
-This will:
-- Start the development server with hot-reload
-- Install all necessary dependencies
-- Make the app available at http://localhost:5173
+The application will be available at http://localhost:3000 with hot-reload enabled.
 
-## Usage
+### Manual Setup
 
-1. Open the application in your web browser
-2. Toggle "Auto-detect format" if needed (enabled by default)
-3. Click "Choose File" or drag and drop a JSON file
-4. The file contents will be displayed in a tree structure
-5. Click on nodes to expand/collapse them
+1. Clone and install dependencies:
+```bash
+git clone https://github.com/tex447/json-viewer-app.git
+cd json-viewer-app
+npm install
+```
 
-## File Format Support
+2. Start development server:
+```bash
+npm run dev
+```
+
+## Supported Data Formats
 
 ### Standard JSON
 ```json
 {
-  "name": "example",
-  "entityType": "test",
-  "observations": ["observation 1", "observation 2"]
+  "type": "entity",
+  "name": "example_entity",
+  "entityType": "example",
+  "observations": [
+    "observation 1",
+    "observation 2"
+  ]
 }
 ```
 
 ### NDJSON (Newline Delimited JSON)
 ```
-{"type":"entity","name":"John_Smith","entityType":"person","observations":["Speaks Spanish"]}
-{"type":"entity","name":"Acme_Corp","entityType":"organization","observations":["Founded in 2020"]}
+{"type":"entity","name":"entity1","entityType":"type1","observations":["obs1"]}
+{"type":"entity","name":"entity2","entityType":"type2","observations":["obs2"]}
+{"type":"relation","from":"entity1","to":"entity2","relationType":"connects"}
 ```
 
-## Technology Stack
-
-- React (Vite)
-- Node.js
-- Docker (for development)
-- Tailwind CSS
-
-## Directory Structure
+## Project Structure
 
 ```
 json-viewer-app/
 ├── src/
 │   ├── components/
-│   │   └── TreeView.jsx
+│   │   ├── TreeView/
+│   │   │   ├── TreeNode.jsx
+│   │   │   └── index.jsx
+│   │   ├── FileUpload/
+│   │   ├── EntityGroup/
+│   │   └── ErrorBoundary/
+│   ├── hooks/
+│   │   ├── useJsonParser.js
+│   │   └── useFileReader.js
+│   ├── utils/
+│   │   ├── formatters.js
+│   │   └── validators.js
 │   ├── App.jsx
-│   ├── App.css
-│   ├── index.css
 │   └── main.jsx
 ├── public/
+├── docker/
+│   └── Dockerfile.dev
 ├── docker-compose.yml
 ├── package.json
 └── vite.config.js
 ```
 
+## Technical Stack
+
+- **Frontend Framework**: React 18 with Vite
+- **Styling**: Tailwind CSS with custom components
+- **State Management**: React Context API
+- **Development Environment**: Docker with hot-reload
+- **Testing**: Jest with React Testing Library
+- **Code Quality**: ESLint, Prettier
+
+## Development
+
+### Available Scripts
+
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run preview`: Preview production build
+- `npm run lint`: Run ESLint
+- `npm start`: Start Docker development environment
+
+### Docker Development
+
+The Docker setup includes:
+- Hot-reload for rapid development
+- Volume mapping for instant code updates
+- Automatic dependency installation
+- Port 3000 exposed for local access
+
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow the established code style
+- Add tests for new features
+- Update documentation as needed
+- Ensure all tests pass before submitting PR
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- This project was inspired by the need for better MCP server data visualization
+- Special thanks to all contributors who have helped shape the project
