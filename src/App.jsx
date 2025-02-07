@@ -16,13 +16,30 @@ function App() {
 
     reader.onload = (e) => {
       const text = e.target.result;
+      console.log('File content:', text.substring(0, 200)); // Debug log
+
       try {
-        // First try NDJSON if auto-detect is enabled
+        // Try NDJSON first if it contains newlines
         if (autoDetectFormat && text.includes('\n')) {
           try {
             const lines = text.trim().split('\n');
-            const objects = lines.map(line => JSON.parse(line));
+            console.log('NDJSON lines:', lines.length); // Debug log
+            
+            // Parse each line individually and filter out empty lines
+            const objects = lines
+              .filter(line => line.trim())
+              .map(line => {
+                try {
+                  return JSON.parse(line);
+                } catch (e) {
+                  console.log('Failed to parse line:', line); // Debug log
+                  throw e;
+                }
+              });
+
+            console.log('Parsed objects:', objects.length); // Debug log
             const mcpValidation = validateMCPData(objects);
+            console.log('MCP validation result:', mcpValidation); // Debug log
             
             if (mcpValidation.isValid) {
               setJsonData(mcpValidation.data);
@@ -31,13 +48,16 @@ function App() {
               return;
             }
           } catch (e) {
-            // If NDJSON parsing fails, continue to try regular JSON
+            console.log('NDJSON parsing error:', e); // Debug log
+            // Continue to try regular JSON
           }
         }
 
-        // Try parsing as regular JSON
+        // Try as regular JSON
         const data = JSON.parse(text);
+        console.log('Regular JSON parsed:', !!data); // Debug log
         const mcpValidation = validateMCPData(data);
+        console.log('Regular JSON MCP validation:', mcpValidation); // Debug log
         
         if (mcpValidation.isValid) {
           setJsonData(mcpValidation.data);
@@ -49,6 +69,7 @@ function App() {
           setError(null);
         }
       } catch (error) {
+        console.log('Final parsing error:', error); // Debug log
         setError('Failed to parse file. Please check the file format.');
         setJsonData(null);
         setIsMCPData(false);
