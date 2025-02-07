@@ -6,10 +6,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies including shadcn/ui
 RUN npm install
+RUN npm install @shadcn/ui
 
-# Copy source code
+# Copy the rest of the code
 COPY . .
 
 # Expose development port
