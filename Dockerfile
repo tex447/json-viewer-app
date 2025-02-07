@@ -13,7 +13,7 @@ RUN npm install @shadcn/ui
 COPY . .
 
 # Expose development port
-EXPOSE 5173
+EXPOSE 3000
 
 # Default command (can be overridden by docker-compose)
 CMD ["npm", "run", "dev", "--", "--host"]
