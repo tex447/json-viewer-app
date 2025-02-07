@@ -1,3 +1,5 @@
+@import '@/index.css';
+
 .app {
   padding: 20px;
   max-width: 1200px;
@@ -22,10 +24,10 @@
 }
 
 .error {
-  color: red;
+  color: var(--destructive);
   padding: 10px;
-  background-color: #fff0f0;
-  border-radius: 4px;
+  background-color: hsl(var(--destructive) / 0.1);
+  border-radius: var(--radius);
   margin-top: 10px;
 }
 
@@ -36,21 +38,21 @@
 
 .entity-group {
   margin-bottom: 20px;
-  border: 1px solid #eee;
-  border-radius: 4px;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
 }
 
 .group-header {
-  background-color: #f8f9fa;
+  background-color: hsl(var(--secondary));
   padding: 10px 15px;
   margin: 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid hsl(var(--border));
   font-size: 1.1em;
-  color: #333;
+  color: hsl(var(--secondary-foreground));
 }
 
 .tree-node {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 .tree-node:last-child {
@@ -66,34 +68,34 @@
 }
 
 .node-header:hover {
-  background-color: #f5f5f5;
+  background-color: hsl(var(--accent));
 }
 
 .expand-icon {
   margin-right: 8px;
-  color: #666;
+  color: hsl(var(--muted-foreground));
   width: 20px;
 }
 
 .entity-name {
   font-weight: 500;
-  color: #2c5282;
+  color: hsl(var(--primary));
   margin-right: 10px;
 }
 
 .entity-type {
-  color: #718096;
+  color: hsl(var(--muted-foreground));
   font-size: 0.9em;
 }
 
 .node-content {
   padding: 0 15px 10px 43px;
-  background-color: #fafafa;
+  background-color: hsl(var(--muted) / 0.5);
 }
 
 .observation {
   padding: 4px 0;
-  color: #4a5568;
+  color: hsl(var(--foreground));
   font-size: 0.95em;
   line-height: 1.4;
 }
