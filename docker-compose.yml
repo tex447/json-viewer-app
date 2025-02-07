@@ -6,9 +6,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-      - node_modules:/app/node_modules
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./index.html:/app/index.html
+      - ./vite.config.js:/app/vite.config.js
     command: sh -c "npm install && npm run dev -- --host"
-
-volumes:
-  node_modules:
