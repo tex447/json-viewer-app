@@ -81,12 +81,20 @@ npm run dev
 json-viewer-app/
 ├── src/
 │   ├── components/
+│   │   ├── ui/
+│   │   │   ├── badge.jsx
+│   │   │   ├── card.jsx
+│   │   │   ├── scroll-area.jsx
+│   │   │   ├── separator.jsx
+│   │   │   └── tooltip.jsx
 │   │   ├── TreeView/
 │   │   │   ├── TreeNode.jsx
 │   │   │   └── index.jsx
 │   │   ├── FileUpload/
 │   │   ├── EntityGroup/
 │   │   └── ErrorBoundary/
+│   ├── lib/
+│   │   └── utils.js
 │   ├── hooks/
 │   │   ├── useJsonParser.js
 │   │   └── useFileReader.js
@@ -99,6 +107,7 @@ json-viewer-app/
 ├── docker/
 │   └── Dockerfile.dev
 ├── docker-compose.yml
+├── postcss.config.js
 ├── package.json
 └── vite.config.js
 ```
@@ -106,11 +115,16 @@ json-viewer-app/
 ## Technical Stack
 
 - **Frontend Framework**: React 18 with Vite
-- **Styling**: Tailwind CSS with custom components
+- **Styling**: 
+  - Tailwind CSS for utility classes
+  - Shadcn UI components
+  - Radix UI primitives
 - **State Management**: React Context API
 - **Development Environment**: Docker with hot-reload
-- **Testing**: Jest with React Testing Library
-- **Code Quality**: ESLint, Prettier
+- **Build Tools**:
+  - Vite for fast development and building
+  - PostCSS for CSS processing
+  - ESM modules for modern JavaScript
 
 ## Development
 
@@ -129,6 +143,26 @@ The Docker setup includes:
 - Volume mapping for instant code updates
 - Automatic dependency installation
 - Port 3000 exposed for local access
+
+### Troubleshooting Common Issues
+
+1. **PostCSS Configuration**:
+   - Ensure postcss.config.js uses ES module syntax
+   - Required plugins: tailwindcss, autoprefixer
+
+2. **Import Resolution**:
+   - Use @/ alias for src directory imports
+   - Configured in vite.config.js
+
+3. **UI Components**:
+   - All components in src/components/ui/
+   - Required Radix UI primitives installed
+   - Proper ESM imports used
+
+4. **Development Environment**:
+   - Node.js 18+ required
+   - Git installed in container
+   - ESM modules enabled in package.json
 
 ## Contributing
 
