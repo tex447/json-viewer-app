@@ -3,7 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tooltip } from '@/components/ui/tooltip';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger 
+} from '@/components/ui/tooltip';
 
 const MCPStats = ({ data }) => {
   // Calculate statistics
@@ -50,13 +55,20 @@ const MCPStats = ({ data }) => {
             <h3 className="text-sm font-medium text-gray-500 mb-2">Entity Types</h3>
             <ScrollArea className="h-20">
               <div className="flex flex-wrap gap-2">
-                {stats.entityTypes.map(type => (
-                  <Tooltip key={type} content={`${data.filter(item => item.entityType === type).length} instances`}>
-                    <Badge variant="secondary" className="cursor-help">
-                      {type}
-                    </Badge>
-                  </Tooltip>
-                ))}
+                <TooltipProvider>
+                  {stats.entityTypes.map(type => (
+                    <Tooltip key={type}>
+                      <TooltipTrigger>
+                        <Badge variant="secondary" className="cursor-help">
+                          {type}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {`${data.filter(item => item.entityType === type).length} instances`}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </TooltipProvider>
               </div>
             </ScrollArea>
           </div>
@@ -65,13 +77,20 @@ const MCPStats = ({ data }) => {
             <h3 className="text-sm font-medium text-gray-500 mb-2">Relation Types</h3>
             <ScrollArea className="h-20">
               <div className="flex flex-wrap gap-2">
-                {stats.relationTypes.map(type => (
-                  <Tooltip key={type} content={`${data.filter(item => item.relationType === type).length} instances`}>
-                    <Badge variant="outline" className="cursor-help">
-                      {type}
-                    </Badge>
-                  </Tooltip>
-                ))}
+                <TooltipProvider>
+                  {stats.relationTypes.map(type => (
+                    <Tooltip key={type}>
+                      <TooltipTrigger>
+                        <Badge variant="outline" className="cursor-help">
+                          {type}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {`${data.filter(item => item.relationType === type).length} instances`}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </TooltipProvider>
               </div>
             </ScrollArea>
           </div>
