@@ -17,9 +17,26 @@ function App() {
     reader.onload = (e) => {
       const text = e.target.result;
       try {
-        // Try parsing as regular JSON first
+        // First try NDJSON if auto-detect is enabled
+        if (autoDetectFormat && text.includes('\n')) {
+          try {
+            const lines = text.trim().split('\n');
+            const objects = lines.map(line => JSON.parse(line));
+            const mcpValidation = validateMCPData(objects);
+            
+            if (mcpValidation.isValid) {
+              setJsonData(mcpValidation.data);
+              setIsMCPData(true);
+              setError(null);
+              return;
+            }
+          } catch (e) {
+            // If NDJSON parsing fails, continue to try regular JSON
+          }
+        }
+
+        // Try parsing as regular JSON
         const data = JSON.parse(text);
-        // Check if it's MCP format
         const mcpValidation = validateMCPData(data);
         
         if (mcpValidation.isValid) {
@@ -32,34 +49,9 @@ function App() {
           setError(null);
         }
       } catch (error) {
-        if (autoDetectFormat) {
-          try {
-            // Try parsing as NDJSON
-            const lines = text.trim().split('\n');
-            const objects = lines.map(line => JSON.parse(line));
-            
-            // Check if NDJSON is in MCP format
-            const mcpValidation = validateMCPData(objects);
-            
-            if (mcpValidation.isValid) {
-              setJsonData(mcpValidation.data);
-              setIsMCPData(true);
-              setError(null);
-            } else {
-              setJsonData(objects);
-              setIsMCPData(false);
-              setError(null);
-            }
-          } catch (error) {
-            setError('Failed to parse file. Please check the file format.');
-            setJsonData(null);
-            setIsMCPData(false);
-          }
-        } else {
-          setError('Failed to parse JSON file.');
-          setJsonData(null);
-          setIsMCPData(false);
-        }
+        setError('Failed to parse file. Please check the file format.');
+        setJsonData(null);
+        setIsMCPData(false);
       }
     };
 
@@ -93,7 +85,7 @@ function App() {
 
       <input
         type="file"
-        accept=".json"
+        accept=".json,.ndjson"
         onChange={handleFileUpload}
         className="mb-6 p-2 border rounded w-full"
       />
