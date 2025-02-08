@@ -9,6 +9,7 @@ function App() {
   const [autoDetectFormat, setAutoDetectFormat] = useState(true);
   const [error, setError] = useState(null);
   const [isMCPData, setIsMCPData] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Test function
   const testExample = () => {
@@ -135,6 +136,24 @@ function App() {
         className="mb-6 p-2 border rounded w-full"
       />
 
+      <div className="mb-4 flex items-center gap-2">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search..."
+          className="px-3 py-2 border rounded"
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Clear
+          </button>
+        )}
+      </div>
+
       <div className="json-viewer">
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -146,7 +165,7 @@ function App() {
           <MCPStats data={jsonData} />
         )}
         
-        {jsonData && <TreeView data={jsonData} />}
+        {jsonData && <TreeView data={jsonData} searchTerm={searchTerm} />}
       </div>
     </div>
   );
