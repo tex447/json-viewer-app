@@ -45,12 +45,41 @@ const TreeNode = ({ data }) => {
   );
 };
 
-const TreeView = ({ data }) => {
+const TreeView = ({ data, searchTerm = '' }) => {
   // Handle both single object and array of objects
   const items = Array.isArray(data) ? data : [data];
   
-  // Group items by entityType
-  const groupedItems = items.reduce((groups, item) => {
+  // Filter items based on search term
+  const filterBySearch = (item) => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    
+    if (item.type === 'entity') {
+      return (
+        (item.name || '').toLowerCase().includes(term) ||
+        (item.entityType || '').toLowerCase().includes(term) ||
+        (item.observations || []).some(obs => 
+          obs.toLowerCase().includes(term)
+        )
+      );
+    }
+    
+    if (item.type === 'relation') {
+      return (
+        (item.from || '').toLowerCase().includes(term) ||
+        (item.to || '').toLowerCase().includes(term) ||
+        (item.relationType || '').toLowerCase().includes(term)
+      );
+    }
+    
+    return false;
+  };
+
+  // Filter items before grouping
+  const filteredItems = items.filter(filterBySearch);
+  
+  // Group filtered items by entityType
+  const groupedItems = filteredItems.reduce((groups, item) => {
     if (item.type !== 'entity') return groups;
     
     const type = item.entityType || 'Other';
@@ -66,8 +95,17 @@ const TreeView = ({ data }) => {
     groupedItems[type].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
   });
 
-  // Sort relations separately if they exist
-  const relations = items.filter(item => item.type === 'relation');
+  // Filter relations
+  const relations = filteredItems.filter(item => item.type === 'relation');
+
+  // Don't render anything if no items match the search
+  if (searchTerm && filteredItems.length === 0) {
+    return (
+      <div className="text-gray-500 p-4">
+        No results found for "{searchTerm}"
+      </div>
+    );
+  }
 
   return (
     <div className="tree-view">
